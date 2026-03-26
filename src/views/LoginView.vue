@@ -7,34 +7,27 @@ const router = useRouter()
 
 const form = ref({
   username: '',
-  email: '',
   password: '',
-  confirmPassword: '',
 })
 
 const error = ref('')
 const loading = ref(false)
 
-const handleRegister = async () => {
+const handleLogin = async () => {
   error.value = ''
-
-  if (form.value.password !== form.value.confirmPassword) {
-    error.value = 'Lozinke se ne podudaraju'
-    return
-  }
 
   try {
     loading.value = true
 
-    await authService.register({
+    const response = await authService.login({
       username: form.value.username,
-      email: form.value.email,
       password: form.value.password,
     })
 
-    router.push('/login')
+    localStorage.setItem('token', response.data.token)
+    router.push('/dashboard')
   } catch (err) {
-    error.value = err.response?.data?.error || 'Registracija nije uspjela'
+    error.value = err.response?.data?.error || 'Prijava nije uspjela'
   } finally {
     loading.value = false
   }
@@ -45,25 +38,17 @@ const handleRegister = async () => {
   <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100">
     <img src="@/components/logo.png" alt="Logo" class="h-56 mb-6" />
     <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
-      <h2 class="text-2xl font-bold text-center mb-6">Izrada računa</h2>
+      <h2 class="text-2xl font-bold text-center mb-6">Prijava</h2>
 
       <div v-if="error" class="mb-4 text-red-500 text-sm">
         {{ error }}
       </div>
 
-      <form @submit.prevent="handleRegister" class="space-y-4">
+      <form @submit.prevent="handleLogin" class="space-y-4">
         <input
           v-model="form.username"
           type="text"
           placeholder="Korisničko ime"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-
-        <input
-          v-model="form.email"
-          type="email"
-          placeholder="Email"
           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
@@ -76,26 +61,18 @@ const handleRegister = async () => {
           required
         />
 
-        <input
-          v-model="form.confirmPassword"
-          type="password"
-          placeholder="Potvrdi lozinku"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-
         <button
           type="submit"
           :disabled="loading"
           class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
         >
-          {{ loading ? 'Izrada računa...' : 'Registracija' }}
+          {{ loading ? 'Prijava...' : 'Prijavi se' }}
         </button>
       </form>
 
       <p class="text-sm text-center mt-4">
-        Već imaš račun?
-        <router-link to="/login" class="text-blue-600 hover:underline">Prijavi se</router-link>
+        Nemaš račun?
+        <router-link to="/register" class="text-blue-600 hover:underline">Registriraj se</router-link>
       </p>
     </div>
   </div>
