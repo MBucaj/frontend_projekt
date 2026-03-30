@@ -26,30 +26,48 @@ const router = createRouter({
     },
     {
       path: '/dashboard',
+      name: 'dashboard',
       component: DashboardView,
       meta: { title: 'Dashboard' }
     },
     {
       path: '/stores',
+      name: 'stores',
       component: StoresView,
       meta: { title: 'Trgovine' }
     },
     {
       path: '/visits',
+      name: 'visits',
       component: VisitsView,
       meta: { title: 'Posjeti' }
     },
     {
       path: '/stats',
+      name: 'stats',
       component: StatsView,
       meta: { title: 'Statistika' }
     },
     {
       path: '/profile',
+      name: 'profile',
       component: ProfileView,
       meta: { title: 'Profil' }
     }
   ],
+})
+
+router.beforeEach((to) => {
+  const publicRoutes = ['login', 'register']
+  const token = localStorage.getItem('token')
+
+  if (!publicRoutes.includes(to.name) && !token) {
+    return { name: 'login' }
+  }
+
+  if (publicRoutes.includes(to.name) && token) {
+    return { name: 'dashboard' }
+  }
 })
 
 router.afterEach((to) => {

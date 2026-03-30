@@ -38,7 +38,6 @@ const handleLogout = () => {
 <template>
   <div class="min-h-screen bg-slate-100 flex">
 
-    <!-- SIDEBAR -->
     <aside class="w-64 bg-white border-r border-slate-200 flex flex-col">
       <div class="px-6 py-5 border-b border-slate-200 flex items-center gap-3">
         <img :src="logo" alt="SalesTrack logo" class="h-10 w-auto" />
@@ -73,10 +72,8 @@ const handleLogout = () => {
       </div>
     </aside>
 
-    <!-- DESNI DIO -->
     <div class="flex-1 flex flex-col">
 
-      <!-- TOPBAR -->
       <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <div>
           <h2 class="text-lg font-semibold text-slate-800">{{ pageTitle }}</h2>
@@ -95,7 +92,6 @@ const handleLogout = () => {
         </div>
       </header>
 
-      <!-- SADRŽAJ -->
       <main class="flex-1 p-6">
         <slot />
       </main>
