@@ -14,7 +14,7 @@ export default {
   },
 
   update(id, storeData) {
-    return api.put(`/stores/${id}`, storeData)
+    return api.patch(`/stores/${id}`, storeData)
   },
 
   remove(id) {

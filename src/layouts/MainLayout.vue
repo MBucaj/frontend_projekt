@@ -37,7 +37,6 @@ const handleLogout = () => {
 
 <template>
   <div class="min-h-screen bg-slate-100 flex">
-
     <aside class="w-64 bg-white border-r border-slate-200 flex flex-col">
       <div class="px-6 py-5 border-b border-slate-200 flex items-center gap-3">
         <img :src="logo" alt="SalesTrack logo" class="h-10 w-auto" />
@@ -73,8 +72,9 @@ const handleLogout = () => {
     </aside>
 
     <div class="flex-1 flex flex-col">
-
-      <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+      <header
+        class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between"
+      >
         <div>
           <h2 class="text-lg font-semibold text-slate-800">{{ pageTitle }}</h2>
           <p class="text-sm text-slate-500">Pregled aplikacije</p>
@@ -83,10 +83,11 @@ const handleLogout = () => {
         <div class="flex items-center gap-3">
           <div class="text-right">
             <p class="text-sm font-medium text-slate-800">{{ username }}</p>
-            <p class="text-xs text-slate-500">Prijavljen korisnik</p>
           </div>
 
-          <div class="h-10 w-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
+          <div
+            class="h-10 w-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold"
+          >
             {{ userInitial }}
           </div>
         </div>
