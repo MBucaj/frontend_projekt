@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import storesService from '@/services/storesService'
 
+const route = useRoute()
 const stores = ref([])
 const loading = ref(false)
 const error = ref('')
@@ -28,6 +30,9 @@ const fetchStores = async () => {
 
 onMounted(() => {
   fetchStores()
+  if (route.query.add === '1') {
+    openAdd()
+  }
 })
 
 const openAdd = () => {

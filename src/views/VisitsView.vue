@@ -1,8 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import visitsService from '@/services/visitsService'
 import storesService from '@/services/storesService'
+
+const route = useRoute()
+const search = ref('')
 
 const visits = ref([])
 const stores = ref([])
@@ -40,6 +44,9 @@ const fetchStores = async () => {
 onMounted(() => {
   fetchVisits()
   fetchStores()
+  if (route.query.add === '1') {
+    openAdd()
+  }
 })
 
 const openAdd = () => {
@@ -99,6 +106,20 @@ const submitForm = async () => {
     formLoading.value = false
   }
 }
+
+const filteredVisits = computed(() => {
+  const q = search.value.toLowerCase().trim()
+  if (!q) return visits.value
+
+  return visits.value.filter(v => {
+    return (
+      v.store?.name?.toLowerCase().includes(q) ||
+      v.store?.city?.toLowerCase().includes(q) ||
+      v.note?.toLowerCase().includes(q)
+    )
+  })
+})
+
 
 const deleteVisit = async (id) => {
   if (!confirm('Jesi li siguran da želiš obrisati ovaj posjet?')) return
@@ -199,6 +220,13 @@ const deleteVisit = async (id) => {
       </div>
     </div>
 
+    <input
+    v-model="search"
+    type="text"
+    placeholder="Pretraži po trgovini, gradu, bilješci..."
+   class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+
     <!-- Tablica -->
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200">
       <table class="w-full text-left">
@@ -214,7 +242,7 @@ const deleteVisit = async (id) => {
         </thead>
         <tbody>
           <tr
-            v-for="visit in visits"
+            v-for="visit in filteredVisits"
             :key="visit._id"
             class="border-b border-slate-100 hover:bg-slate-50"
           >
@@ -232,7 +260,7 @@ const deleteVisit = async (id) => {
               </button>
             </td>
           </tr>
-          <tr v-if="visits.length === 0 && !loading">
+          <tr v-if="filteredVisits.length === 0 && !loading">
             <td colspan="6" class="py-8 text-center text-slate-400">Nema dodanih posjeta</td>
           </tr>
         </tbody>
