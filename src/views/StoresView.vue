@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import storesService from '@/services/storesService'
@@ -8,6 +8,16 @@ const route = useRoute()
 const stores = ref([])
 const loading = ref(false)
 const error = ref('')
+const search = ref('')
+
+const filteredStores = computed(() => {
+  const q = search.value.toLowerCase().trim()
+  if (!q) return stores.value
+  return stores.value.filter(s =>
+    s.name?.toLowerCase().includes(q) ||
+    s.city?.toLowerCase().includes(q)
+  )
+})
 
 const showForm = ref(false)
 const editingStore = ref(null)
@@ -157,6 +167,13 @@ const deleteStore = async (id) => {
       </div>
     </div>
 
+    <input
+      v-model="search"
+      type="text"
+      placeholder="Pretraži po imenu ili gradu..."
+      class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+
     <!-- Tablica -->
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200">
       <table class="w-full text-left">
@@ -169,7 +186,7 @@ const deleteStore = async (id) => {
         </thead>
         <tbody>
           <tr
-            v-for="store in stores"
+            v-for="store in filteredStores"
             :key="store._id"
             class="border-b border-slate-100 hover:bg-slate-50"
           >
@@ -184,7 +201,7 @@ const deleteStore = async (id) => {
               </button>
             </td>
           </tr>
-          <tr v-if="stores.length === 0 && !loading">
+          <tr v-if="filteredStores.length === 0 && !loading">
             <td colspan="3" class="py-8 text-center text-slate-400">Nema dodanih trgovina</td>
           </tr>
         </tbody>

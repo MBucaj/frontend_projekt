@@ -6,6 +6,10 @@ import StoresView from '../views/StoresView.vue'
 import VisitsView from '../views/VisitsView.vue'
 import StatsView from '../views/StatsView.vue'
 import ProfileView from '../views/ProfileView.vue'
+import CategoriesView from '../views/CategoriesView.vue'
+import ProductsView from '../views/ProductsView.vue'
+import ContactsView from '../views/ContactsView.vue'
+import OrdersView from '../views/OrdersView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,6 +57,30 @@ const router = createRouter({
       name: 'profile',
       component: ProfileView,
       meta: { title: 'Profil' }
+    },
+    {
+      path: '/categories',
+      name: 'categories',
+      component: CategoriesView,
+      meta: { title: 'Kategorije' }
+    },
+    {
+      path: '/products',
+      name: 'products',
+      component: ProductsView,
+      meta: { title: 'Proizvodi' }
+    },
+    {
+      path: '/contacts',
+      name: 'contacts',
+      component: ContactsView,
+      meta: { title: 'Kontakti' }
+    },
+    {
+      path: '/orders',
+      name: 'orders',
+      component: OrdersView,
+      meta: { title: 'Narudžbe' }
     }
   ],
 })

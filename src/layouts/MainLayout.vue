@@ -10,6 +10,10 @@ const navItems = [
   { name: 'Dashboard', path: '/dashboard' },
   { name: 'Trgovine', path: '/stores' },
   { name: 'Posjeti', path: '/visits' },
+  { name: 'Kategorije', path: '/categories' },
+  { name: 'Proizvodi', path: '/products' },
+  { name: 'Kontakti', path: '/contacts' },
+  { name: 'Narudžbe', path: '/orders' },
   { name: 'Statistika', path: '/stats' },
   { name: 'Profil', path: '/profile' },
 ]
@@ -21,7 +25,7 @@ const username = computed(() => {
     const token = localStorage.getItem('token')
     if (!token) return 'Korisnik'
     const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload.name || payload.username || payload.email || 'Korisnik'
+    return payload.username || payload.email || 'Korisnik'
   } catch {
     return 'Korisnik'
   }
