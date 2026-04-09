@@ -14,6 +14,7 @@ const navItems = [
   { name: 'Proizvodi', path: '/products' },
   { name: 'Kontakti', path: '/contacts' },
   { name: 'Narudžbe', path: '/orders' },
+  { name: 'Rute', path: '/routes' },
   { name: 'Statistika', path: '/stats' },
   { name: 'Profil', path: '/profile' },
 ]

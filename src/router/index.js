@@ -10,6 +10,7 @@ import CategoriesView from '../views/CategoriesView.vue'
 import ProductsView from '../views/ProductsView.vue'
 import ContactsView from '../views/ContactsView.vue'
 import OrdersView from '../views/OrdersView.vue'
+import RoutesView from '../views/RoutesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -81,6 +82,12 @@ const router = createRouter({
       name: 'orders',
       component: OrdersView,
       meta: { title: 'Narudžbe' }
+    },
+    {
+      path: '/routes',
+      name: 'routes',
+      component: RoutesView,
+      meta: { title: 'Rute' }
     }
   ],
 })

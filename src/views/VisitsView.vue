@@ -1,12 +1,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import visitsService from '@/services/visitsService'
 import storesService from '@/services/storesService'
 
 const route = useRoute()
+const router = useRouter()
 const search = ref('')
+const filterSource = ref('sve')
 
 const visits = ref([])
 const stores = ref([])
@@ -108,17 +110,29 @@ const submitForm = async () => {
 }
 
 const filteredVisits = computed(() => {
-  const q = search.value.toLowerCase().trim()
-  if (!q) return visits.value
+  let result = visits.value
 
-  return visits.value.filter(v => {
-    return (
+  if (filterSource.value === 'ruta') {
+    result = result.filter(v => v.source === 'ruta')
+  } else if (filterSource.value === 'rucno') {
+    result = result.filter(v => v.source !== 'ruta')
+  }
+
+  const q = search.value.toLowerCase().trim()
+  if (q) {
+    result = result.filter(v =>
       v.store?.name?.toLowerCase().includes(q) ||
       v.store?.city?.toLowerCase().includes(q) ||
       v.note?.toLowerCase().includes(q)
     )
-  })
+  }
+
+  return result
 })
+
+const goToRoute = (routeId) => {
+  router.push({ path: '/routes', query: { id: routeId } })
+}
 
 
 const deleteVisit = async (id) => {
@@ -220,11 +234,22 @@ const deleteVisit = async (id) => {
       </div>
     </div>
 
-    <input
-    v-model="search"
-    type="text"
-    placeholder="Pretraži po trgovini, gradu, bilješci..."
-   class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+    <div class="flex gap-3 mb-4">
+      <input
+        v-model="search"
+        type="text"
+        placeholder="Pretraži po trgovini, gradu, bilješci..."
+        class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <select
+        v-model="filterSource"
+        class="border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <option value="sve">Sve</option>
+        <option value="rucno">Ručno dodani</option>
+        <option value="ruta">Iz rute</option>
+      </select>
+    </div>
 
 
     <!-- Tablica -->
@@ -249,7 +274,24 @@ const deleteVisit = async (id) => {
             <td class="py-4 px-6 font-medium text-slate-800">{{ visit.store?.name }}</td>
             <td class="py-4 px-6 text-slate-600">{{ visit.store?.city }}</td>
             <td class="py-4 px-6 text-slate-600">{{ visit.date }}</td>
-            <td class="py-4 px-6 text-slate-600">{{ visit.note }}</td>
+            <td class="py-4 px-6 text-slate-600">
+              <div class="flex flex-col gap-1">
+                <span>{{ visit.note }}</span>
+                <button
+                  v-if="visit.source === 'ruta' && visit.route"
+                  @click="goToRoute(visit.route._id)"
+                  class="inline-flex items-center gap-1 w-fit text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full hover:bg-purple-200 transition"
+                >
+                  🗺 {{ visit.route.name }}
+                </button>
+                <span
+                  v-else-if="visit.source === 'ruta'"
+                  class="inline-flex items-center gap-1 w-fit text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full"
+                >
+                  iz rute
+                </span>
+              </div>
+            </td>
             <td class="py-4 px-6 text-blue-600 font-medium">{{ visit.kilometers }} km</td>
             <td class="py-4 px-6 text-right space-x-2">
               <button @click="openEdit(visit)" class="text-sm text-blue-600 hover:underline">

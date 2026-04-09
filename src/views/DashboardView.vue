@@ -6,6 +6,7 @@ import visitsService from '@/services/visitsService'
 import storesService from '@/services/storesService'
 import ordersService from '@/services/ordersService'
 import productsService from '@/services/productsService'
+import contactsService from '@/services/contactsService'
 
 
 const username = computed(() => {
@@ -128,6 +129,39 @@ const submitStoreForm = async () => {
     storeFormError.value = err.response?.data?.error || 'Greška pri spremanju.'
   } finally {
     storeFormLoading.value = false
+  }
+}
+
+// --- Modal za kontakt ---
+const showContactForm = ref(false)
+const contactForm = ref({ name: '', phone: '', email: '', role: '' })
+const contactFormError = ref('')
+const contactFormLoading = ref(false)
+
+const openContactForm = () => {
+  contactForm.value = { name: '', phone: '', email: '', role: '' }
+  contactFormError.value = ''
+  showContactForm.value = true
+}
+const closeContactForm = () => {
+  showContactForm.value = false
+  contactForm.value = { name: '', phone: '', email: '', role: '' }
+  contactFormError.value = ''
+}
+const submitContactForm = async () => {
+  if (!contactForm.value.name || !contactForm.value.phone || !contactForm.value.email || !contactForm.value.role) {
+    contactFormError.value = 'Sva polja su obavezna.'
+    return
+  }
+  try {
+    contactFormLoading.value = true
+    contactFormError.value = ''
+    await contactsService.create(contactForm.value)
+    closeContactForm()
+  } catch (err) {
+    contactFormError.value = err.response?.data?.error || 'Greška pri spremanju.'
+  } finally {
+    contactFormLoading.value = false
   }
 }
 
@@ -287,6 +321,18 @@ const submitVisitForm = async () => {
           >
             Dodaj novu posjetu
           </button>
+          <button
+            @click="openContactForm"
+            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-left text-sm hover:bg-slate-50 transition"
+          >
+            Dodaj novi kontakt
+          </button>
+          <RouterLink
+            to="/routes?add=1"
+            class="block w-full rounded-xl border border-slate-200 px-4 py-3 text-left text-sm hover:bg-slate-50 transition"
+          >
+            Dodaj novu rutu
+          </RouterLink>
           <RouterLink
             to="/products"
             class="block w-full rounded-xl border border-slate-200 px-4 py-3 text-left text-sm hover:bg-slate-50 transition"
@@ -302,6 +348,38 @@ const submitVisitForm = async () => {
         </div>
       </div>
     </section>
+
+    <!-- Modal: Novi kontakt -->
+    <div v-if="showContactForm" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">Novi kontakt</h3>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm text-slate-600 mb-1">Ime i prezime</label>
+            <input v-model="contactForm.name" type="text" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ime i prezime" />
+          </div>
+          <div>
+            <label class="block text-sm text-slate-600 mb-1">Telefon</label>
+            <input v-model="contactForm.phone" type="text" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+387..." />
+          </div>
+          <div>
+            <label class="block text-sm text-slate-600 mb-1">Email</label>
+            <input v-model="contactForm.email" type="email" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="email@primjer.com" />
+          </div>
+          <div>
+            <label class="block text-sm text-slate-600 mb-1">Uloga</label>
+            <input v-model="contactForm.role" type="text" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="npr. Direktor, Voditelj nabave..." />
+          </div>
+          <p v-if="contactFormError" class="text-red-500 text-sm">{{ contactFormError }}</p>
+        </div>
+        <div class="flex gap-3 mt-5">
+          <button @click="submitContactForm" :disabled="contactFormLoading" class="flex-1 bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition text-sm font-medium disabled:opacity-50">
+            {{ contactFormLoading ? 'Spremanje...' : 'Spremi' }}
+          </button>
+          <button @click="closeContactForm" class="flex-1 border border-slate-200 py-2 rounded-xl hover:bg-slate-50 transition text-sm">Odustani</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Modal: Nova trgovina -->
     <div v-if="showStoreForm" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
