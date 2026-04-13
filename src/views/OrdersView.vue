@@ -236,7 +236,7 @@ const deleteOrder = async (id) => {
               >
                 <select
                   v-model="item.productId"
-                  class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="flex-1 min-w-0 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="" disabled>Odaberi proizvod</option>
                   <option v-for="product in products" :key="product._id" :value="product._id">
@@ -244,23 +244,19 @@ const deleteOrder = async (id) => {
                   </option>
                 </select>
 
-                <div class="relative w-36">
-                  <input
-                    v-model="item.quantity"
-                    type="number"
-                    min="1"
-                    class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16"
-                    placeholder="0"
-                  />
-                  <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">
-                    kartona
-                  </span>
-                </div>
+                <input
+                  v-model="item.quantity"
+                  type="number"
+                  min="1"
+                  class="w-20 shrink-0 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="0"
+                />
+                <span class="shrink-0 text-xs text-slate-400">kom</span>
 
                 <button
                   @click="removeItem(index)"
                   :disabled="formItems.length === 1"
-                  class="text-red-400 hover:text-red-600 disabled:opacity-30 text-lg leading-none"
+                  class="shrink-0 text-red-400 hover:text-red-600 disabled:opacity-30 text-lg leading-none"
                 >
                   ×
                 </button>
